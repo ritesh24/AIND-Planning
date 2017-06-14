@@ -61,6 +61,20 @@ class AirCargoProblem(Problem):
             """
             loads = []
             # TODO create all load ground actions from the domain Load action
+            for plane in self.planes:
+                for airport in self.airports:
+                    for cargo in self.cargos:
+                        precond_pos = [expr("At({}, {})".format(cargo, airport)), expr("At({}, {})".format(plane, airport)),
+                                        ]
+                        precond_neg = []
+                        effect_pos = [expr("In({}, {})".format(cargo, plane))]
+                        effect_neg = [expr("At({}, {})".format(cargo, airport))]
+
+                        load = Action(expr("Load({}, {}, {})".format(cargo, plane, airport)),
+                                [precond_pos, precond_neg],
+                                [effect_pos, effect_neg])
+                        loads.append(load)
+
             return loads
 
         def unload_actions():
@@ -70,6 +84,22 @@ class AirCargoProblem(Problem):
             """
             unloads = []
             # TODO create all Unload ground actions from the domain Unload action
+            for plane in self.planes:
+                for airport in self.airports:
+                    for cargo in self.cargos:
+                        precond_pos = [expr("In({}, {})".format(cargo, plane)),
+                                        expr("At({}, {})".format(plane, airport)),
+                                        ]
+                        precond_neg = []
+                        effect_pos = [expr("At({}, {})".format(cargo, airport))]
+                        effect_neg = [expr("In({}, {})".format(cargo, plane))]
+
+                        unload = Action(expr("Unload({}, {}, {})".format(cargo, plane, airport)),
+                                    [precond_pos, precond_neg],
+                                    [effect_pos, effect_neg])
+
+                        unloads.append(unload)
+
             return unloads
 
         def fly_actions():
